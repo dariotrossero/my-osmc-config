@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Installing packages...."
 sudo apt-get update; #update repository cache
-sudo apt-get install -y mc htop python3-pip deluge git python-pip build-essential libssl-dev libffi-dev python-dev python-setuptools python-pip python-dev git libssl-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 libssl-dev libffi-dev build-essential deluged deluge-web deluge-console python-mako unzip cron minidlna samba samba-common-bin rbp-userland-dev-osmc libvncserver-dev libconfig++-dev python-wheel python-cffi python-cryptography
+sudo apt-get install -y mc htop python3-pip deluge git python-pip build-essential libssl-dev libffi-dev python-dev python-setuptools python-pip python-dev git libssl-dev libxslt1-dev libxslt1.1 libxml2-dev libxml2 libssl-dev libffi-dev build-essential deluged deluge-web deluge-console python-mako unzip cron minidlna samba samba-common-bin rbp-userland-dev-osmc libvncserver-dev libconfig++-dev python-wheel python-cffi python-cryptography python-setuptools python3-setuptools gunicorn3
 
 
 echo "Installing SickRage...."
@@ -44,3 +44,17 @@ mkdir bin
 git clone https://gitlab.com/dariotrossero/coopeofertas.git
 pip3 install -r ~/bin/coopeofertas/back/requirements.txt
 pip3 install -r ~/bin/coopeofertas/web/requirements.txt
+
+
+echo "Configuring Samba..."
+mv smb.conf /etc/samba
+sudo systemctl unmask samba.service
+sudo systemctl enable smbd.service nmbd.service
+sudo systemctl start smbd.service nmbd.service
+
+echo "Setting crontab jobs"
+(crontab -l 2>/dev/null; echo "55 08 * * * rm /home/osmc/bin/coopeofertas/back/offers/*") | crontab -
+(crontab -l 2>/dev/null; echo "00 09 * * * cd /home/osmc/bin/coopeofertas/back/; ./main.py c") | crontab -
+(crontab -l 2>/dev/null; echo "10 09 * * * cd /home/osmc/bin/coopeofertas/back/; ./main.py v") | crontab -
+(crontab -l 2>/dev/null; echo "20 09 * * * cd /home/osmc/bin/coopeofertas/back/; ./main.py w") | crontab -
+(crontab -l 2>/dev/null; echo "00 02 * * * /home/osmc/bin/reaname_extensions.sh") | crontab -
