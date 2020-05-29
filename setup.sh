@@ -40,8 +40,8 @@ sudo systemctl enable minidlna-systemd.service
 sudo mv pip.conf /etc
 
 echo "Other stuff"
-mkdir bin
-git clone https://gitlab.com/dariotrossero/coopeofertas.git
+mkdir ~/bin
+git clone https://gitlab.com/dariotrossero/coopeofertas.git ~/bin
 pip3 install -r ~/bin/coopeofertas/back/requirements.txt
 pip3 install -r ~/bin/coopeofertas/web/requirements.txt
 
