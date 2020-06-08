@@ -20,8 +20,8 @@ sudo pkill -i deluged
 echo "Access to <ip>:9112 with password 'deluge'"
 deluge-console "config -s allow_remote True"
 deluged
+cp web.conf ~/.config/deluge
 deluge-web -f
-
 sudo cp deluge*.service /lib/systemd/system
 sudo systemctl enable deluge-web.service
 sudo systemctl enable deluged.service
@@ -29,11 +29,11 @@ sudo systemctl enable deluged.service
 #VNC SERVER
 #https://discourse.osmc.tv/t/howto-install-a-vnc-server-on-the-raspberry-pi/1517
 
-echo "Installing Minidlna...."
+#echo "Installing Minidlna...."
 #minidlna
-sudo cp minidlna.conf /etc
-sudo cp minidlna-systemd.service /lib/systemd/system
-sudo systemctl enable minidlna-systemd.service
+#sudo cp minidlna.conf /etc
+#sudo cp minidlna-systemd.service /lib/systemd/system
+#sudo systemctl enable minidlna-systemd.service
 
 
 #piwheels
@@ -44,6 +44,8 @@ mkdir ~/bin
 git clone https://gitlab.com/dariotrossero/coopeofertas.git ~/bin
 pip3 install -r ~/bin/coopeofertas/back/requirements.txt
 pip3 install -r ~/bin/coopeofertas/web/requirements.txt
+cp rename_extensions.sh ~/bin
+chmod +x ~/bin/rename_extensions.sh
 
 
 echo "Configuring Samba..."
@@ -57,4 +59,8 @@ echo "Setting crontab jobs"
 (crontab -l 2>/dev/null; echo "00 09 * * * cd /home/osmc/bin/coopeofertas/back/; ./main.py c") | crontab -
 (crontab -l 2>/dev/null; echo "10 09 * * * cd /home/osmc/bin/coopeofertas/back/; ./main.py v") | crontab -
 (crontab -l 2>/dev/null; echo "20 09 * * * cd /home/osmc/bin/coopeofertas/back/; ./main.py w") | crontab -
-(crontab -l 2>/dev/null; echo "00 02 * * * /home/osmc/bin/reaname_extensions.sh") | crontab -
+(crontab -l 2>/dev/null; echo "00 02 * * * /home/osmc/bin/reaname_extensions.sh /media/TOURO_MOBILE/Peliculas") | crontab -
+(crontab -l 2>/dev/null; echo "00 03 * * * /home/osmc/bin/reaname_extensions.sh /media/TOURO_MOBILE/Series") | crontab -
+(crontab -l 2>/dev/null; echo "@reboot sleep 30; sudo systemctl start minidlna.service") | crontab -
+
+
